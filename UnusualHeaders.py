@@ -28,7 +28,7 @@ class BurpExtender(IBurpExtender, IHttpListener, ITab):
             "Referrer-Policy", "Report-To", "Sec-Fetch-Dest", "Sec-Fetch-Mode", "Sec-Fetch-Site", "Sec-Fetch-User",
             "Server", "Server-Timeing", "Set-Cookie", "Speculation-Rules", "Strict-Transport-Security", "Te",
             "Transfer-Encoding", "Upgrade-Insecure-Requests", "User-Agent", "Vary", "X-AspNet-Version", 
-            "X-AspNetMvc-Version", "X-Cloud-Trave-Context", "X-Content-Type-Options", "X-DNS-Prefetch-Control", "X-Frame-Options",
+            "X-AspNetMvc-Version", "X-Cloud-Trace-Context", "X-Content-Type-Options", "X-DNS-Prefetch-Control", "X-Frame-Options",
             "X-Goog-ACL", "X-Goog-Allowed-Resources", "X-Goog-API-Version", "X-Goog-Bucket-Object-Lock-Enabled",
             "X-Goog-Bucket-Retention-Period", "X-Goog-Bypass-Governance-Retention", "X-Goog-Component-Count",
             "X-Goog-Content-Length-Range", "X-Goog-Content-SHA256", "X-Goog-Copy-Source", "X-Goog-Copy-Source-Generation",
