@@ -100,7 +100,7 @@ class BurpExtender(IBurpExtender, IHttpListener, ITab):
     def processHttpMessage(self, toolFlag, messageIsRequest, messageInfo):
         # We don't want to assess any injected headers from Burp or other plugins, 
         # so if an Active Scan is the trigger of the request, just simply return without doing anything
-        if toolFlag == IBurpExtenderCallbacks.TOOL_SCANNER:
+        if toolFlag == self._callbacks.TOOL_SCANNER:
             return
             
         # Check if we should apply this extension only to in-scope items
