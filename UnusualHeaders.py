@@ -18,16 +18,18 @@ class BurpExtender(IBurpExtender, IHttpListener, ITab):
         self.ignoredHeadersModel = DefaultListModel()
         self.defaultIgnoredHeaders = sorted([
             "Accept", "Accept-Encoding", "Accept-Language", "Accept-Ranges", "Access-Control-Allow-Origin",
-            "Age", "Authorization", "Cache-Control", "Cf-Cache-Status", "Cf-Ray", "Connection",
+            "Access-Control-Allow-Methods", "Access-Control-Allow-Headers", "Access-Control-Allow-Credentials",
+            "Access-Control-Request-Method", "Access-Control-Request-Headers",
+            "Age", "Alt-Svc", "Authorization", "Cache-Control", "Cf-Cache-Status", "Cf-Ray", "Connection",
             "Content-Disposition", "Content-Encoding", "Content-Language", "Content-Length", "Content-MD5",
             "Content-Range", "Content-Security-Policy", "Content-Type", "Cookie", "Date", "ETag", "Expires",
             "Host", "If-Match", "If-Modified-Since", "If-None-Match", "If-Unmodified-Since", "Last-Modified",
-            "Location", "Nel", "Permissions-Policy", "Priority", "Range", "Referrer", "Referrer-Policy",
-            "Report-To", "Sec-Fetch-Dest", "Sec-Fetch-Mode", "Sec-Fetch-Site", "Sec-Fetch-User", "Server",
-            "Server-Timeing", "Set-Cookie", "Strict-Transport-Security", "Te", "Transfer-Encoding",
-            "Upgrade-Insecure-Requests", "User-Agent", "Vary", "X-AspNet-Version", "X-AspNetMvc-Version",
-            "X-Content-Type-Options", "X-DNS-Prefetch-Control", "X-Frame-Options", "X-Goog-ACL",
-            "X-Goog-Allowed-Resources", "X-Goog-API-Version", "X-Goog-Bucket-Object-Lock-Enabled",
+            "Location", "Nel", "Origin", "Permissions-Policy", "Pragma", "Priority", "Range", "Referer", "Referrer", 
+            "Referrer-Policy", "Report-To", "Sec-Fetch-Dest", "Sec-Fetch-Mode", "Sec-Fetch-Site", "Sec-Fetch-User",
+            "Server", "Server-Timeing", "Set-Cookie", "Speculation-Rules", "Strict-Transport-Security", "Te",
+            "Transfer-Encoding", "Upgrade-Insecure-Requests", "User-Agent", "Vary", "X-AspNet-Version", 
+            "X-AspNetMvc-Version", "X-Cloud-Trave-Context", "X-Content-Type-Options", "X-DNS-Prefetch-Control", "X-Frame-Options",
+            "X-Goog-ACL", "X-Goog-Allowed-Resources", "X-Goog-API-Version", "X-Goog-Bucket-Object-Lock-Enabled",
             "X-Goog-Bucket-Retention-Period", "X-Goog-Bypass-Governance-Retention", "X-Goog-Component-Count",
             "X-Goog-Content-Length-Range", "X-Goog-Content-SHA256", "X-Goog-Copy-Source", "X-Goog-Copy-Source-Generation",
             "X-Goog-Copy-Source-If-Generation-Match", "X-Goog-Copy-Source-If-Match", "X-Goog-Copy-Source-If-Metageneration-Match",
@@ -119,16 +121,22 @@ class BurpExtender(IBurpExtender, IHttpListener, ITab):
         # Process headers to identify unusual ones
         unusualHeaders = set()
         for header in headers:
-            if ":" in header:
-                headerName = header.split(":")[0].strip()
-
-                # Perform case-sensitive or case-insensitive matching
-                if caseSensitive:
-                    if headerName not in ignoredHeaders:
-                        unusualHeaders.add(headerName)
-                else:
-                    if headerName.lower() not in [ignoredHeader.lower() for ignoredHeader in ignoredHeaders]:
-                        unusualHeaders.add(headerName)
+            # Some rare situations have a colon in the HTTP Verb line, this next condition filters those out
+            if " " in header:
+                potentialHeader = header.split(" ")[0]
+                # All headers and their values are split by a colon.  This ensures there is a colon and we get the first part
+                if ":" in potentialHeader:
+                    headerName = potentialHeader.split(":")[0].strip()
+    
+                    # Perform case-sensitive or case-insensitive matching
+                    if caseSensitive:
+                        if headerName not in ignoredHeaders:
+                            print("Unusual header found: " + headerName)
+                            unusualHeaders.add(headerName)
+                    else:
+                        if headerName.lower() not in [ignoredHeader.lower() for ignoredHeader in ignoredHeaders]:
+                            print("Unusual header found: " + headerName.lower())
+                            unusualHeaders.add(headerName)
 
         if unusualHeaders:
             # Formatting the issue text with markers and proper new lines (using Python 2 string formatting)
