@@ -19,7 +19,7 @@ class BurpExtender(IBurpExtender, IHttpListener, ITab):
         self.defaultIgnoredHeaders = sorted([
             "Accept", "Accept-Encoding", "Accept-Language", "Accept-Ranges", "Access-Control-Allow-Origin",
             "Access-Control-Allow-Methods", "Access-Control-Allow-Headers", "Access-Control-Allow-Credentials",
-            "Access-Control-Request-Method", "Access-Control-Request-Headers",
+            "Access-Control-Max-Age", "Access-Control-Request-Method", "Access-Control-Request-Headers",
             "Age", "Alt-Svc", "Authorization", "Cache-Control", "Cf-Cache-Status", "Cf-Ray", "Connection",
             "Content-Disposition", "Content-Encoding", "Content-Language", "Content-Length", "Content-MD5",
             "Content-Range", "Content-Security-Policy", "Content-Type", "Cookie", "Date", "ETag", "Expires",
