@@ -98,6 +98,11 @@ class BurpExtender(IBurpExtender, IHttpListener, ITab):
             self.ignoredHeadersModel.removeElement(selectedHeader)
 
     def processHttpMessage(self, toolFlag, messageIsRequest, messageInfo):
+        # We don't want to assess any injected headers from Burp or other plugins, 
+        # so if an Active Scan is the trigger of the request, just simply return without doing anything
+        if toolFlag == IBurpExtenderCallbacks.TOOL_SCANNER:
+            return
+            
         # Check if we should apply this extension only to in-scope items
         if self.scopeOnlyCheckbox.isSelected() and not self._callbacks.isInScope(self._helpers.analyzeRequest(messageInfo).getUrl()):
             return  # Skip out-of-scope items
