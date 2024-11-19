@@ -25,11 +25,12 @@ class BurpExtender(IBurpExtender, IHttpListener, ITab):
             "Content-Range", "Content-Security-Policy", "Content-Type", "Cookie", "Date", "ETag", "Expires",
             "Host", "If-Match", "If-Modified-Since", "If-None-Match", "If-Unmodified-Since", "Last-Modified",
             "Location", "Nel", "Origin", "Permissions-Policy", "Pragma", "Priority", "Range", "Referer", "Referrer", 
-            "Referrer-Policy", "Report-To", "Sec-Fetch-Dest", "Sec-Fetch-Mode", "Sec-Fetch-Site", "Sec-Fetch-User",
-            "Sec-CH-UA", "Sec-CH-UA-Mobile", "Sec-CH-UA-Platform", "Server", "Server-Timeing", "Set-Cookie",
-            "Speculation-Rules", "Strict-Transport-Security", "Te", "Transfer-Encoding", "Upgrade-Insecure-Requests",
-            "User-Agent", "Vary", "X-AspNet-Version", "X-AspNetMvc-Version", "X-Cloud-Trace-Context",
-            "X-Content-Type-Options", "X-DNS-Prefetch-Control", "X-Frame-Options", "X-Forwarded-Host", "X-Goog-ACL",
+            "Referrer-Policy", "Report-To", "request-context", "Sec-Fetch-Dest", "Sec-Fetch-Mode", "Sec-Fetch-Site",
+            "Sec-Fetch-User", "Sec-CH-UA", "Sec-CH-UA-Mobile", "Sec-CH-UA-Platform", "Server", "Server-Timeing",
+            "Set-Cookie", "Speculation-Rules", "Strict-Transport-Security", "Te", "Transfer-Encoding",
+            "Upgrade-Insecure-Requests", "User-Agent", "Vary", "X-AspNet-Version", "X-AspNetMvc-Version",
+            "x-amz-request-id", "x-amz-id-2", "X-Cloud-Trace-Context", "X-Content-Type-Options", 
+            "X-DNS-Prefetch-Control", "X-Frame-Options", "X-Forwarded-Host", "X-Goog-ACL",
             "X-Goog-Allowed-Resources", "X-Goog-API-Version", "X-Goog-Bucket-Object-Lock-Enabled",
             "X-Goog-Bucket-Retention-Period", "X-Goog-Bypass-Governance-Retention", "X-Goog-Component-Count",
             "X-Goog-Content-Length-Range", "X-Goog-Content-SHA256", "X-Goog-Copy-Source", "X-Goog-Copy-Source-Generation",
@@ -42,7 +43,7 @@ class BurpExtender(IBurpExtender, IHttpListener, ITab):
             "X-Goog-Metadata-Directive", "X-Goog-Metageneration", "X-Goog-Object-Lock-Mode",
             "X-Goog-Object-Lock-Retain-Until-Date", "X-Goog-Project-ID", "X-Goog-Resumable", "X-Goog-Storage-Class",
             "X-Goog-Stored-Content-Encoding", "X-Goog-Stored-Content-Length", "X-Goog-User-Project",
-            "X-Guploader-Uploadid", "X-Powered-By", "X-Sourcemap", "X-XSS-Protection"
+            "X-Guploader-Uploadid", "x-ms-middleware-request-id", "X-Powered-By", "X-Sourcemap", "X-XSS-Protection"
         ])
 
 
