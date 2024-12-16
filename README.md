@@ -1,4 +1,4 @@
-# Burp-InterestingHeaders
+# Burp-UnusualHeaders
 
 This is a Burp Suite extension that attempts to identify any unusual HTTP headers on requests or responses.  Occasionally I come across web applications that have a custom header but these often go unnoticed because of the general background noise of other headers going on.  I have used other extentions in the past and they all appear to come with a host of other features or limited lists of recognised headers and so inevitably I end up ignoring any issues they raise.
 
