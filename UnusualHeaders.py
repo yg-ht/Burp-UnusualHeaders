@@ -37,12 +37,12 @@ class BurpExtender(IBurpExtender, IHttpListener, ITab):
             "X-Goog-Copy-Source-If-Generation-Match", "X-Goog-Copy-Source-If-Match", "X-Goog-Copy-Source-If-Metageneration-Match",
             "X-Goog-Copy-Source-If-Modified-Since", "X-Goog-Copy-Source-If-None-Match", "X-Goog-Copy-Source-If-Unmodified-Since",
             "X-Goog-Custom-Audit-KEY", "X-Goog-Custom-Time", "X-Goog-Date", "X-Goog-Encryption-Algorithm", "X-Goog-Encryption-Key",
-            "X-Goog-Encryption-Key-SHA256", "X-Goog-Encryption-KMS-Key-Name", "X-Goog-Expiration", "X-Goog-Generation",
-            "X-Goog-Hash", "X-Goog-IF-Generation-Match", "X-Goog-IF-Metageneration-Match", "X-Goog-Interop-List-Objects-Format",
-            "X-Goog-Meta-KEY", "X-Goog-Metadata-Directive", "X-Goog-Metageneration", "X-Goog-Object-Lock-Mode",
-            "X-Goog-Object-Lock-Retain-Until-Date", "X-Goog-Project-ID", "X-Goog-Resumable", "X-Goog-Storage-Class",
-            "X-Goog-Stored-Content-Encoding", "X-Goog-Stored-Content-Length", "X-Goog-User-Project", "X-Guploader-Uploadid",
-            "x-ms-middleware-request-id", "X-Powered-By", "X-Requested-With", "X-Sourcemap", "X-XSS-Protection"
+            "X-Goog-Encryption-Key-SHA256", "X-Goog-Encryption-KMS-Key-Name", "X-Goog-Expiration", "X-Goog-Generation", "X-Goog-Hash",
+            "X-Goog-IF-Generation-Match", "X-Goog-IF-Metageneration-Match", "X-Goog-Interop-List-Objects-Format", "X-Goog-Meta-KEY",
+            "X-Goog-Metadata-Directive", "X-Goog-Metageneration", "X-Goog-Object-Lock-Mode", "X-Goog-Object-Lock-Retain-Until-Date",
+            "X-Goog-Project-ID", "X-Goog-Resumable", "X-Goog-Storage-Class", "X-Goog-Stored-Content-Encoding",
+            "X-Goog-Stored-Content-Length", "X-Goog-User-Project", "X-Guploader-Uploadid", "x-ms-middleware-request-id", "X-Pingback",
+            "X-Powered-By", "X-Redirect-By", "X-Requested-With", "X-Sourcemap", "X-XSS-Protection"
         ])
 
 
