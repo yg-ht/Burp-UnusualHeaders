@@ -42,7 +42,7 @@ class BurpExtender(IBurpExtender, IHttpListener, ITab):
             "X-Goog-Metadata-Directive", "X-Goog-Metageneration", "X-Goog-Object-Lock-Mode", "X-Goog-Object-Lock-Retain-Until-Date",
             "X-Goog-Project-ID", "X-Goog-Resumable", "X-Goog-Storage-Class", "X-Goog-Stored-Content-Encoding",
             "X-Goog-Stored-Content-Length", "X-Goog-User-Project", "X-Guploader-Uploadid", "x-ms-middleware-request-id", "X-Pingback",
-            "X-Powered-By", "X-Redirect-By", "X-Requested-With", "X-Sourcemap", "X-XSS-Protection"
+            "X-Powered-By", "X-Redirect-By", "X-Requested-With", "X-Robots-Tag", "X-Sourcemap", "X-XSS-Protection"
         ])
 
 
