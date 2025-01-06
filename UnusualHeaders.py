@@ -17,12 +17,11 @@ class BurpExtender(IBurpExtender, IHttpListener, ITab):
         # Default ignored headers (ordered alphabetically)
         self.ignoredHeadersModel = DefaultListModel()
         self.defaultIgnoredHeaders = sorted([
-            "Accept", "Accept-Encoding", "Accept-Language", "Accept-Ranges", "Access-Control-Allow-Origin",
-            "Access-Control-Allow-Methods", "Access-Control-Allow-Headers", "Access-Control-Allow-Credentials",
-            "Access-Control-Max-Age", "Access-Control-Request-Method", "Access-Control-Request-Headers", "Age",
-            "Alt-Svc", "Authorization", "Cache-Control", "Cf-Cache-Status", "Cf-Ray", "Connection", "Content-Disposition",
-            "Content-Encoding", "Content-Language", "Content-Length", "Content-MD5", "Content-Range",
-            "Content-Security-Policy", "Content-Security-Policy-Report-Only", "Content-Type", "Cookie",
+            "Accept", "Accept-Encoding", "Accept-Language", "Accept-Ranges", "Access-Control-Allow-Origin", "Access-Control-Allow-Methods",
+            "Access-Control-Allow-Headers", "Access-Control-Allow-Credentials", "Access-Control-Expose-Headers", "Access-Control-Max-Age",
+            "Access-Control-Request-Method", "Access-Control-Request-Headers", "Age", "Alt-Svc", "Authorization", "Cache-Control",
+            "Cf-Cache-Status", "Cf-Ray", "Connection", "Content-Disposition", "Content-Encoding", "Content-Language", "Content-Length",
+            "Content-MD5", "Content-Range", "Content-Security-Policy", "Content-Security-Policy-Report-Only", "Content-Type", "Cookie",
             "Cross-Origin-Opener-Policy", "Cross-Origin-Embedder-Policy", "Cross-Origin-Resource-Policy", "Date", "Dnt", "ETag",
             "Expect-CT", "Expires", "Host", "If-Match", "If-Modified-Since", "If-None-Match", "If-Unmodified-Since", "Last-Modified",
             "Link", "Location", "Nel", "Origin", "Permissions-Policy", "Pragma", "Priority", "Range", "Referer", "Referrer",
