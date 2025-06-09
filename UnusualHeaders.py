@@ -100,8 +100,10 @@ class BurpExtender(IBurpExtender, IHttpListener, ITab):
 
     def processHttpMessage(self, toolFlag, messageIsRequest, messageInfo):
         # We don't want to assess any injected headers from Burp or other plugins, 
-        # so if an Active Scan is the trigger of the request, just simply return without doing anything
-        if toolFlag == self._callbacks.TOOL_SCANNER and messageIsRequest:
+        # so for example, if an Active Scan is the trigger of the request, just simply return without doing anything
+        # All responses should be scanned regardless of their trigger
+        # So therefore, skip any request that was not initiated through the Proxy tab
+        if messageIsRequest and toolFlag != self._callbacks.TOOL_PROXY:
             return
             
         # Check if we should apply this extension only to in-scope items
