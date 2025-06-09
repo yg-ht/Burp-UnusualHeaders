@@ -120,6 +120,25 @@ class BurpExtender(IBurpExtender, IHttpListener, ITab):
 
         headers = analyzedMessage.getHeaders()
 
+        unusualHeaders = detectUnusualHeaders()
+
+        if unusualHeaders:
+            # Formatting the issue text with markers and proper new lines (using Python 2 string formatting)
+            headers = "<br />".join(["%s" % (header) for header in unusualHeaders])
+
+            # Raise separate issues for request and response headers
+            if location == "Request":
+                issueText = "Unusual request headers detected:<br /><br />" + headers
+            else:
+                issueText = "Unusual response headers detected:<br /><br />" + headers
+
+            self._callbacks.addScanIssue(
+                CustomScanIssue(
+                    messageInfo.getHttpService(), location, self._helpers.analyzeRequest(messageInfo).getUrl(), messageInfo, issueText
+                )
+            )
+
+    def detectUnusualHeaders():
         # Determine case sensitivity
         caseSensitive = self.caseSensitiveCheckbox.isSelected()
 
@@ -145,22 +164,7 @@ class BurpExtender(IBurpExtender, IHttpListener, ITab):
                         if headerName.lower() not in [ignoredHeader.lower() for ignoredHeader in ignoredHeaders]:
                             print("Unusual header found: " + headerName.lower())
                             unusualHeaders.add(headerName)
-
-        if unusualHeaders:
-            # Formatting the issue text with markers and proper new lines (using Python 2 string formatting)
-            headers = "<br />".join(["%s" % (header) for header in unusualHeaders])
-
-            # Raise separate issues for request and response headers
-            if location == "Request":
-                issueText = "Unusual request headers detected:<br /><br />" + headers
-            else:
-                issueText = "Unusual response headers detected:<br /><br />" + headers
-
-            self._callbacks.addScanIssue(
-                CustomScanIssue(
-                    messageInfo.getHttpService(), location, self._helpers.analyzeRequest(messageInfo).getUrl(), messageInfo, issueText
-                )
-            )
+        return unusualHeaders
 
 class CustomScanIssue(IScanIssue):
     def __init__(self, httpService, location, url, httpMessages, detail):
