@@ -165,6 +165,26 @@ class BurpExtender(IBurpExtender, IHttpListener, ITab):
                             print("Unusual header found: " + headerName.lower())
                             unusualHeaders.add(headerName)
         return unusualHeaders
+        
+    def doPassiveScan(self, baseRequestResponse):
+        issues = []
+        requestHeaders = self._helpers.analyzeRequest(baseRequestResponse).getHeaders()
+        responseHeaders = self._helpers.analyzeResponse(baseRequestResponse.getResponse()).getHeaders()
+
+        reqUnusual = self.detectUnusualHeaders(requestHeaders)
+        resUnusual = self.detectUnusualHeaders(responseHeaders)
+
+        if reqUnusual:
+            issues.append(CustomScanIssue(
+                baseRequestResponse.getHttpService(), "Request", self._helpers.analyzeRequest(baseRequestResponse).getUrl(), baseRequestResponse,
+                "Unusual request headers detected:<br /><br />%s" % "<br />".join(reqUnusual)
+            ))
+        if resUnusual:
+            issues.append(CustomScanIssue(
+                baseRequestResponse.getHttpService(), "Response", self._helpers.analyzeRequest(baseRequestResponse).getUrl(), baseRequestResponse,
+                "Unusual response headers detected:<br /><br />%s" % "<br />".join(resUnusual)
+            ))
+        return issues if issues else None
 
 class CustomScanIssue(IScanIssue):
     def __init__(self, httpService, location, url, httpMessages, detail):
