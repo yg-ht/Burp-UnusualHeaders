@@ -100,10 +100,8 @@ class BurpExtender(IBurpExtender, IHttpListener, ITab):
 
     def processHttpMessage(self, toolFlag, messageIsRequest, messageInfo):
         # We don't want to assess any injected headers from Burp or other plugins, 
-        # so for example, if an Active Scan is the trigger of the request, just simply return without doing anything
-        # All responses should be scanned regardless of their trigger
-        # So therefore, skip any request that was not initiated through the Proxy tab
-        if messageIsRequest and toolFlag != self._callbacks.TOOL_PROXY:
+        # so if an Active Scan is the trigger of the request, just simply return without doing anything
+        if toolFlag == self._callbacks.TOOL_SCANNER and messageIsRequest:
             return
             
         # Check if we should apply this extension only to in-scope items
@@ -120,25 +118,6 @@ class BurpExtender(IBurpExtender, IHttpListener, ITab):
 
         headers = analyzedMessage.getHeaders()
 
-        unusualHeaders = detectUnusualHeaders()
-
-        if unusualHeaders:
-            # Formatting the issue text with markers and proper new lines (using Python 2 string formatting)
-            headers = "<br />".join(["%s" % (header) for header in unusualHeaders])
-
-            # Raise separate issues for request and response headers
-            if location == "Request":
-                issueText = "Unusual request headers detected:<br /><br />" + headers
-            else:
-                issueText = "Unusual response headers detected:<br /><br />" + headers
-
-            self._callbacks.addScanIssue(
-                CustomScanIssue(
-                    messageInfo.getHttpService(), location, self._helpers.analyzeRequest(messageInfo).getUrl(), messageInfo, issueText
-                )
-            )
-
-    def detectUnusualHeaders():
         # Determine case sensitivity
         caseSensitive = self.caseSensitiveCheckbox.isSelected()
 
@@ -164,27 +143,22 @@ class BurpExtender(IBurpExtender, IHttpListener, ITab):
                         if headerName.lower() not in [ignoredHeader.lower() for ignoredHeader in ignoredHeaders]:
                             print("Unusual header found: " + headerName.lower())
                             unusualHeaders.add(headerName)
-        return unusualHeaders
-        
-    def doPassiveScan(self, baseRequestResponse):
-        issues = []
-        requestHeaders = self._helpers.analyzeRequest(baseRequestResponse).getHeaders()
-        responseHeaders = self._helpers.analyzeResponse(baseRequestResponse.getResponse()).getHeaders()
 
-        reqUnusual = self.detectUnusualHeaders(requestHeaders)
-        resUnusual = self.detectUnusualHeaders(responseHeaders)
+        if unusualHeaders:
+            # Formatting the issue text with markers and proper new lines (using Python 2 string formatting)
+            headers = "<br />".join(["%s" % (header) for header in unusualHeaders])
 
-        if reqUnusual:
-            issues.append(CustomScanIssue(
-                baseRequestResponse.getHttpService(), "Request", self._helpers.analyzeRequest(baseRequestResponse).getUrl(), baseRequestResponse,
-                "Unusual request headers detected:<br /><br />%s" % "<br />".join(reqUnusual)
-            ))
-        if resUnusual:
-            issues.append(CustomScanIssue(
-                baseRequestResponse.getHttpService(), "Response", self._helpers.analyzeRequest(baseRequestResponse).getUrl(), baseRequestResponse,
-                "Unusual response headers detected:<br /><br />%s" % "<br />".join(resUnusual)
-            ))
-        return issues if issues else None
+            # Raise separate issues for request and response headers
+            if location == "Request":
+                issueText = "Unusual request headers detected:<br /><br />" + headers
+            else:
+                issueText = "Unusual response headers detected:<br /><br />" + headers
+
+            self._callbacks.addScanIssue(
+                CustomScanIssue(
+                    messageInfo.getHttpService(), location, self._helpers.analyzeRequest(messageInfo).getUrl(), messageInfo, issueText
+                )
+            )
 
 class CustomScanIssue(IScanIssue):
     def __init__(self, httpService, location, url, httpMessages, detail):
