@@ -9,6 +9,7 @@ class BurpExtender(IBurpExtender, IHttpListener, ITab):
         self._callbacks = callbacks
         self._helpers = callbacks.getHelpers()
         self._callbacks.setExtensionName("Unusual Header Detector")
+        self._reportedFindings = set()
 
         # Initialize UI elements
         self.panel = JPanel()
@@ -154,11 +155,35 @@ class BurpExtender(IBurpExtender, IHttpListener, ITab):
             else:
                 issueText = "Unusual response headers detected:<br /><br />" + headers
 
-            self._callbacks.addScanIssue(
-                CustomScanIssue(
-                    messageInfo.getHttpService(), location, self._helpers.analyzeRequest(messageInfo).getUrl(), messageInfo, issueText
+            issueKey = self._buildFindingKey(messageInfo.getHttpService(), self._helpers.analyzeRequest(messageInfo).getUrl(), location, unusualHeaders, caseSensitive)
+            if self._deduplifyFinding(issueKey):
+                self._callbacks.addScanIssue(
+                    CustomScanIssue(
+                        messageInfo.getHttpService(), location, self._helpers.analyzeRequest(messageInfo).getUrl(), messageInfo, issueText
+                    )
                 )
-            )
+
+    def _buildFindingKey(self, httpService, url, location, unusualHeaders, caseSensitive):
+        if caseSensitive:
+            normalizedHeaders = sorted(list(unusualHeaders))
+        else:
+            normalizedHeaders = sorted([header.lower() for header in unusualHeaders])
+
+        return "%s|%s|%s|%s|%s|%s" % (
+            httpService.getProtocol(),
+            httpService.getHost(),
+            httpService.getPort(),
+            url.toString(),
+            location,
+            ",".join(normalizedHeaders)
+        )
+
+    def _deduplifyFinding(self, issueKey):
+        if issueKey in self._reportedFindings:
+            return False
+
+        self._reportedFindings.add(issueKey)
+        return True
 
 class CustomScanIssue(IScanIssue):
     def __init__(self, httpService, location, url, httpMessages, detail):
