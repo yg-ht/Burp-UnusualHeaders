@@ -2,6 +2,7 @@ from burp import IBurpExtender, IHttpListener, IScannerCheck, ITab, IScanIssue
 from javax.swing import JPanel, JLabel, JTextField, JButton, JList, DefaultListModel, JScrollPane, BoxLayout, JCheckBox
 from java.awt import Dimension
 from java.util import List, ArrayList
+from unusual_headers_core import build_finding_key, detect_unusual_headers
 
 class BurpExtender(IBurpExtender, IHttpListener, ITab):
     def registerExtenderCallbacks(self, callbacks):
@@ -125,25 +126,11 @@ class BurpExtender(IBurpExtender, IHttpListener, ITab):
         # Get the ignored headers
         ignoredHeaders = [self.ignoredHeadersModel.getElementAt(i) for i in range(self.ignoredHeadersModel.size())]
 
-        # Process headers to identify unusual ones
-        unusualHeaders = set()
-        for header in headers:
-            # Some rare situations have a colon in the HTTP Verb line, this next condition filters those out
-            if " " in header:
-                potentialHeader = header.split(" ")[0]
-                # All headers and their values are split by a colon.  This ensures there is a colon and we get the first part
-                if ":" in potentialHeader:
-                    headerName = potentialHeader.split(":")[0].strip()
-    
-                    # Perform case-sensitive or case-insensitive matching
-                    if caseSensitive:
-                        if headerName not in ignoredHeaders:
-                            print("Unusual header found: " + headerName)
-                            unusualHeaders.add(headerName)
-                    else:
-                        if headerName.lower() not in [ignoredHeader.lower() for ignoredHeader in ignoredHeaders]:
-                            print("Unusual header found: " + headerName.lower())
-                            unusualHeaders.add(headerName)
+        # Keep detection independent from Burp so the same behaviour can be
+        # reused safely by the listener and the forthcoming passive scan check.
+        unusualHeaders = detect_unusual_headers(
+            headers, ignoredHeaders, caseSensitive
+        )
 
         if unusualHeaders:
             # Formatting the issue text with markers and proper new lines (using Python 2 string formatting)
@@ -164,18 +151,14 @@ class BurpExtender(IBurpExtender, IHttpListener, ITab):
                 )
 
     def _buildFindingKey(self, httpService, url, location, unusualHeaders, caseSensitive):
-        if caseSensitive:
-            normalizedHeaders = sorted(list(unusualHeaders))
-        else:
-            normalizedHeaders = sorted([header.lower() for header in unusualHeaders])
-
-        return "%s|%s|%s|%s|%s|%s" % (
+        return build_finding_key(
             httpService.getProtocol(),
             httpService.getHost(),
             httpService.getPort(),
             url.toString(),
             location,
-            ",".join(normalizedHeaders)
+            unusualHeaders,
+            caseSensitive
         )
 
     def _deduplifyFinding(self, issueKey):
