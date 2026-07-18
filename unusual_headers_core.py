@@ -68,3 +68,29 @@ def build_finding_key(
         location,
         ",".join(normalised_headers)
     )
+
+
+def build_issue_identity(
+        protocol, host, port, path, location, unusual_headers):
+    """Build the exact, case-normalised identity used for consolidation."""
+    normalised_headers = tuple(sorted(
+        header.lower() for header in unusual_headers
+    ))
+
+    return (
+        protocol,
+        host,
+        port,
+        path,
+        location,
+        normalised_headers,
+    )
+
+
+def escape_html(value):
+    """Escape untrusted text before including it in Burp's HTML issue detail."""
+    return ("%s" % value).replace("&", "&amp;") \
+        .replace("<", "&lt;") \
+        .replace(">", "&gt;") \
+        .replace('"', "&quot;") \
+        .replace("'", "&#x27;")

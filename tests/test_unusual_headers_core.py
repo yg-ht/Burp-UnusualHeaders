@@ -2,7 +2,12 @@
 
 import unittest
 
-from unusual_headers_core import build_finding_key, detect_unusual_headers
+from unusual_headers_core import (
+    build_finding_key,
+    build_issue_identity,
+    detect_unusual_headers,
+    escape_html,
+)
 
 
 class DetectUnusualHeadersTests(unittest.TestCase):
@@ -47,6 +52,11 @@ class DetectUnusualHeadersTests(unittest.TestCase):
 
         self.assertEqual(set(), result)
 
+    def test_empty_header_collection_returns_no_findings(self):
+        self.assertEqual(
+            set(), detect_unusual_headers([], ["Content-Type"], False)
+        )
+
 
 class BuildFindingKeyTests(unittest.TestCase):
     """Cover stable identities used to avoid repeat listener findings."""
@@ -74,6 +84,54 @@ class BuildFindingKeyTests(unittest.TestCase):
         )
 
         self.assertNotEqual(first, second)
+
+
+class BuildIssueIdentityTests(unittest.TestCase):
+    """Cover the exact identity used by Burp issue consolidation."""
+
+    def test_identity_normalises_header_order_and_casing(self):
+        first = build_issue_identity(
+            "https", "example.test", 443, "/path", "Response",
+            set(["X-Zeta", "x-alpha"])
+        )
+        second = build_issue_identity(
+            "https", "example.test", 443, "/path", "Response",
+            set(["X-ALPHA", "x-zeta"])
+        )
+
+        self.assertEqual(first, second)
+
+    def test_identity_keeps_different_locations_and_header_sets_distinct(self):
+        request_identity = build_issue_identity(
+            "https", "example.test", 443, "/path", "Request",
+            set(["X-Unusual"])
+        )
+        response_identity = build_issue_identity(
+            "https", "example.test", 443, "/path", "Response",
+            set(["X-Unusual"])
+        )
+        different_headers = build_issue_identity(
+            "https", "example.test", 443, "/path", "Request",
+            set(["X-Different"])
+        )
+        different_path = build_issue_identity(
+            "https", "example.test", 443, "/other", "Request",
+            set(["X-Unusual"])
+        )
+
+        self.assertNotEqual(request_identity, response_identity)
+        self.assertNotEqual(request_identity, different_headers)
+        self.assertNotEqual(request_identity, different_path)
+
+
+class EscapeHtmlTests(unittest.TestCase):
+    """Ensure untrusted header names are safe in HTML issue details."""
+
+    def test_escapes_html_metacharacters(self):
+        self.assertEqual(
+            "&lt;&amp;&gt;&quot;&#x27;",
+            escape_html("<&>\"'")
+        )
 
 
 if __name__ == "__main__":
